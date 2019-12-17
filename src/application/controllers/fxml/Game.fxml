@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root"
+	fx:controller="application.controllers.ControllerGame"
+	onMouseClicked="#handleColpisci">
+	<children>
+		<Canvas fx:id="canvas"></Canvas>
+		<GridPane fx:id="pane" hgap="128" vgap="72">
+			<children>
+				<ImageView fx:id="backToMenu"
+					onMouseClicked="#handleBackToMenu" GridPane.columnIndex="0"
+					GridPane.rowIndex="0" GridPane.columnSpan="2" GridPane.rowSpan="2"></ImageView>
+				<TextField fx:id="text" maxWidth="200" maxHeight="50"
+					style="-fx-font-size:20" onMouseClicked="#handleClear" GridPane.columnIndex="4" GridPane.rowIndex="5"></TextField>
+				<Label fx:id="info" textFill="BLUE" style="-fx-font-size:40; -fx-font-weight : bold" GridPane.columnIndex="3" GridPane.rowIndex="3" GridPane.columnSpan="6" GridPane.rowSpan="1"></Label>
+				<Label fx:id="info2"
+					style="-fx-font-size:24; -fx-font-weight : bold" text="Your Name"
+					underline="true" minWidth="200" maxWidth="200" GridPane.columnIndex="3" GridPane.rowIndex="5" GridPane.columnSpan="2" GridPane.rowSpan="1"></Label>
+				<Button fx:id="conferma" text="Ok" maxWidth="200"
+					maxHeight="100" style="-fx-font-size:24"
+					onMouseClicked="#handleConferma" onMouseEntered="#handleColore"
+					onMouseExited="#handleRipristino" GridPane.columnIndex="4" GridPane.rowIndex="6"></Button>
+			</children>
+		</GridPane>
+	</children>
+	<!-- TODO Add Nodes -->
+</StackPane>
+

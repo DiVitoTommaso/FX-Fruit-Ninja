@@ -1,0 +1,99 @@
+#veryEasy:hover{
+	-fx-effect: dropshadow(two-pass-box,gold,10.0,0.0,4.0,5.0);
+}
+
+#easy:hover{
+	-fx-effect: dropshadow(two-pass-box,gold,10.0,0.0,4.0,5.0);
+}
+
+#medium:hover{
+	-fx-effect: dropshadow(two-pass-box,gold,10.0,0.0,4.0,5.0);
+}
+
+#hard:hover{
+	-fx-effect: dropshadow(two-pass-box,gold,10.0,0.0,4.0,5.0);
+}
+
+#expert:hover{
+	-fx-effect: dropshadow(two-pass-box,gold,10.0,0.0,4.0,5.0);
+}
+
+#extreme:hover{
+	-fx-effect: dropshadow(two-pass-box,gold,10.0,0.0,4.0,5.0);
+}
+
+#sliderSoundtrack:hover{
+	-fx-effect: dropshadow(two-pass-box,orange,10.0,0.0,4.0,5.0);
+}
+
+#sliderSounds:hover{
+	-fx-effect: dropshadow(two-pass-box,orange,10.0,0.0,4.0,5.0);
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-alignment : center ;
+    -fx-background-radius: 20.0;
+	-fx-border-radius: 20.0;
+}
+.list-view {
+    -fx-background-color: transparent;
+    
+}
+
+.list-cell:focused{
+	-fx-background-color: green;
+	-fx-border-color: black;
+}
+
+#easy{
+	-fx-background-color: #037fc6 ;
+	-fx-border-color: black;
+	-fx-background-radius: 20.0;
+	-fx-border-radius: 20.0;
+}
+
+#veryEasy{
+	-fx-background-color: #037fc6 ;
+	-fx-border-color: black;
+	-fx-background-radius: 20.0;
+	-fx-border-radius: 20.0;
+}
+
+#medium{
+	-fx-background-color: #03c617 ;
+	-fx-border-color: black;
+	-fx-background-radius: 20.0;
+	-fx-border-radius: 20.0;
+}
+
+#hard{
+	-fx-background-color: #037fc6;
+	-fx-border-color: black;
+	-fx-background-radius: 20.0;
+	-fx-border-radius: 20.0;
+}
+
+#expert{
+	-fx-background-color: #037fc6 ;
+	-fx-border-color: black;
+	-fx-background-radius: 20.0;
+	-fx-border-radius: 20.0;
+}
+
+#extreme{
+	-fx-background-color: #037fc6 ;
+	-fx-border-color: black;
+	-fx-background-radius: 20.0;
+	-fx-border-radius: 20.0;
+}
+
+#sliderSoundtrack{
+	-fx-font-size:28.0;
+
+}
+
+#sliderSounds{
+	-fx-font-size:28.0;
+	
+}

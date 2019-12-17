@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.text.*?>
+
+<StackPane
+	fx:controller="application.controllers.ControllerMenu"
+	xmlns:fx="http://javafx.com/fxml/1" fx:id="root">
+	<children>
+		<Canvas fx:id="canvas"></Canvas>
+		<Pane fx:id="pane" maxWidth="Infinity" maxHeight="Infinity">
+			<children>
+				<ImageView fx:id="play" onMouseClicked="#handlePlay"
+					layoutX="400" layoutY="175"></ImageView>
+				<ImageView fx:id="contact" onMouseClicked="#handleEmail"
+					layoutX="900" layoutY="100"></ImageView>
+				<Text text="Contact us!" fill="blue" style="-fx-font-size:32; -fx-font-weight:bold"
+					layoutX="930" layoutY="270"></Text>
+				<ImageView fx:id="settings"
+					onMouseClicked="#handleSettings" layoutX="880" layoutY="480"></ImageView>
+				<Text text="Settings" fill="red" style="-fx-font-size:32; -fx-font-weight:bold "
+					layoutX="950" layoutY="680"></Text>
+				<ImageView fx:id="leaderBoard"
+					onMouseClicked="#handleLeaderBoard" layoutX="30" layoutY="400"></ImageView>
+				<Text text="Leaderboard" fill="black" style="-fx-font-size:32; -fx-font-weight:bold"
+					layoutX="130" layoutY="680"></Text>
+				<ImageView fx:id="tutorial"
+					onMouseClicked="#handleTutorial" layoutX="100" layoutY="100"></ImageView>
+				<Text text="Tutorial" fill="darkgreen" style="-fx-font-size:32; -fx-font-weight:bold" layoutX="170" layoutY="270"></Text>	
+			</children>
+		</Pane>
+	</children>
+</StackPane>
+

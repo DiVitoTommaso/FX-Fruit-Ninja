@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.GridPane?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+
+<GridPane fx:id="pane" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.controllers.ControllerSettings"
+	maxWidth="Infinity" maxHeight="Infinity" hgap="50" vgap="60">
+	<children>
+		<ImageView fx:id="goBack" onMouseClicked="#handleBackToMenu"
+			GridPane.columnIndex="0" GridPane.columnSpan="4"
+			GridPane.rowIndex="0" GridPane.rowSpan="2" />
+		<Label style="-fx-font-size:64" text="Settings" textFill="red"
+			GridPane.columnIndex="5" GridPane.columnSpan="3"
+			GridPane.rowIndex="1" GridPane.rowSpan="2" />
+		<Button fx:id="veryEasy" maxWidth="150" minWidth="150"
+			onMouseClicked="#handleVeryEasy" text="Idiot"
+			GridPane.columnIndex="3" GridPane.rowIndex="4" />
+		<Button fx:id="easy" maxWidth="150" minWidth="150"
+			onMouseClicked="#handleEasy" text="Easy" GridPane.columnIndex="3"
+			GridPane.rowIndex="5" />
+		<Button fx:id="medium" maxWidth="150" minWidth="150"
+			onMouseClicked="#handleMedium" text="Medium" GridPane.columnIndex="3"
+			GridPane.rowIndex="6" />
+		<Button fx:id="hard" maxWidth="150" minWidth="150"
+			onMouseClicked="#handleHard" text="Hard" GridPane.columnIndex="4"
+			GridPane.rowIndex="4" />
+		<Button fx:id="expert" maxWidth="150" minWidth="150"
+			onMouseClicked="#handleInsane" text="Expert" GridPane.columnIndex="4"
+			GridPane.rowIndex="5" />
+		<Button fx:id="extreme" onMouseClicked="#handleExtreme"
+			text="Extreme" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+		<Text text="       Difficulty"
+			style="-fx-font-size: 42; -fx-font-weight :bold" fill="green"
+			GridPane.columnIndex="3" GridPane.columnSpan="4"
+			GridPane.rowIndex="3" />
+		<Text text="     Sounds" fill="green"
+			style="-fx-font-weight : bold ; -fx-font-size : 42"
+			GridPane.columnIndex="8" GridPane.columnSpan="4"
+			GridPane.rowIndex="3"></Text>
+		<Pane GridPane.columnIndex="7" GridPane.rowIndex="3"
+			GridPane.columnSpan="4" GridPane.rowSpan="3">
+			<ListView fx:id="musicsListView" minWidth="625" maxWidth="625" 
+				minHeight="220" maxHeight="220" onMouseClicked="#handleChangeMusic" onKeyReleased="#handleChangeMusicByKey"
+				layoutY="120"></ListView>
+			<Text fx:id="text" text="Music Volume:"  layoutY="360" style="-fx-font-weight : bold"/>
+			<Slider fx:id="sliderSoundtrack" max="1" maxWidth="200"
+				min="0" minWidth="200" onMouseReleased="#handleSoundTrack"
+				value="0.5" layoutX="200" layoutY="335" />
+			<Text fx:id="text2" text="Game Volume:" layoutY="400"  style="-fx-font-weight : bold"/>
+			<Slider fx:id="sliderSounds" max="1" maxWidth="200" min="0"
+				minWidth="200" onMouseReleased="#handleSounds" value="1"  layoutY="375" layoutX="200"/>
+		</Pane>
+	</children>
+	<columnConstraints>
+		<ColumnConstraints />
+		<ColumnConstraints />
+		<ColumnConstraints />
+		<ColumnConstraints />
+		<ColumnConstraints />
+		<ColumnConstraints />
+		<ColumnConstraints />
+		<ColumnConstraints />
+		<ColumnConstraints />
+		<ColumnConstraints />
+	</columnConstraints>
+	<rowConstraints>
+		<RowConstraints />
+		<RowConstraints />
+		<RowConstraints />
+		<RowConstraints />
+		<RowConstraints />
+		<RowConstraints />
+		<RowConstraints />
+		<RowConstraints />
+		<RowConstraints />
+	</rowConstraints>
+</GridPane>
+      
+
+

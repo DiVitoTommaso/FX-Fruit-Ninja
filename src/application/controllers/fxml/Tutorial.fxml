@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane fx:id="Pane" prefHeight="564.0" prefWidth="792.0"
+	xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+	fx:controller="application.controllers.ControllerTutorial">
+	<children>
+		<ImageView fx:id="leaderBoard" fitHeight="111.0"
+			fitWidth="125.0" layoutX="96.0" layoutY="35.0" x="10.0" y="2.0" />
+		<Text layoutX="57.0" layoutY="161.0" strokeType="OUTSIDE"
+			strokeWidth="0.0" style="-fx-font-size:16; -fx-font-weight:bold"
+			text="Clicclando su questa icona si potrà accedere alla Leaderboard, ovvero la classifica del gioco"
+			wrappingWidth="253.697265625" />
+		<ImageView fx:id="settings" fitHeight="98.0"
+			fitWidth="109.0" layoutX="342.0" layoutY="195.0" />
+		<Text layoutX="256.0" layoutY="306.0" strokeType="OUTSIDE"
+			strokeWidth="0.0" style="-fx-font-size:16; -fx-font-weight:bold"
+			text="Questa icona invece, permette di accedere alle impostazioni del gioco. Si può decidere la difficoltà, il volume di gioco e il volume degli effetti sonori"
+			wrappingWidth="320.17578125" />
+		<ImageView fx:id="contact" fitHeight="98.0" fitWidth="109.0"
+			layoutX="522.0" layoutY="374.0" />
+		<Text layoutX="449.0" layoutY="485.0" strokeType="OUTSIDE"
+			strokeWidth="0.0" style="-fx-font-size:16; -fx-font-weight:bold"
+			text="La sezione &quot;Contact us&quot; permette di inviare feedback direttamente agli sviluppatori contenenti critiche e/o suggerimenti."
+			wrappingWidth="316.625" />
+		<ImageView fx:id="goBack" fitHeight="51.0" fitWidth="50.0"
+			layoutX="0" layoutY="0.0" onMouseClicked="#handleBackToMenu" />
+
+		<Text layoutX="550.0" layoutY="161.0" strokeType="OUTSIDE"
+			strokeWidth="0.0" style="-fx-font-size:16; -fx-font-weight:bold"
+			text="questa icona presente nel gioco è la tua arma per colpire i bersagli essa si ricarica automaticamente dopo ogni colpo"
+			wrappingWidth="316.625" />
+		<ImageView fx:id="spada" fitHeight="100.0" fitWidth="100.0"
+			layoutX="620.0" layoutY="35.0" />
+
+		<Text layoutX="800.0" layoutY="380.0" strokeType="OUTSIDE"
+			strokeWidth="0.0" style="-fx-font-size:16; -fx-font-weight:bold"
+			text="Nel gioco sono presenti vari bersagli i limoni valgono 1 punto base, gli aranci 2 punti base e le mele valgono 3 punti base,invece se si colpiscono troppi tronchi si perde. Gioca difficoltà sempre più alte per aumentare i punti ottenuti dai bersagli grazie a un moltiplicatore maggiore,Good Luck!"
+			wrappingWidth="316.625" />
+		<ImageView fx:id="bersaglio" fitHeight="110.0"
+			fitWidth="110.0" layoutX="830.0" layoutY="270.0" />
+		<ImageView fx:id="nemico" fitHeight="100.0" fitWidth="100.0"
+			layoutX="930.0" layoutY="270.0" />
+
+
+
+	</children>
+</Pane>

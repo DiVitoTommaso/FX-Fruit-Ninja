@@ -1,0 +1,37 @@
+#aggiorna:hover{
+	-fx-effect: dropshadow(three-pass-box,gold,10.0,0.0,4.0,5.0);
+}
+
+#ricerca:hover{
+	-fx-effect: dropshadow(two-pass-box,darkblue,10.0,0.0,4.0,5.0);
+}
+
+#aggiorna{
+	-fx-background-color: #0de53c;
+	-fx-background-radius: 10.0;
+	-fx-border-radius: 10.0;
+	-fx-border-color: black;
+}
+
+#table {
+	-fx-background-color: transparent;
+}
+
+.table-row-cell {
+  -fx-background-color: transparent;
+}
+
+.table-row-cell:focused {
+	-fx-background-color: gray;
+}
+#barra{
+	-fx-background-radius: 10.0;
+	-fx-border-radius: 10.0;
+}
+
+#ricerca{
+	-fx-background-radius: 10.0;
+	-fx-border-radius: 10.0;
+	-fx-border-color: black;
+	-fx-background-color:#faff02;
+}

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.TableView?>
+
+<VBox fx:id="root" onKeyPressed="#handleBackToMenu" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.controllers.ControllerLeaderboard">
+   <children>
+      <TableView fx:id="table" minHeight="520"></TableView>
+      <GridPane hgap="30" vgap="30">
+         <children>
+            <TextField fx:id="barra" maxHeight="100" maxWidth="200" onMouseClicked="#handleClear" style="-fx-font-size:20" text="Name" GridPane.columnIndex="18" GridPane.columnSpan="2" GridPane.rowIndex="0" />
+            <Button fx:id="ricerca" maxHeight="100" maxWidth="200" onMouseClicked="#handleSearch" style="-fx-font-size:20" text="Search" GridPane.columnIndex="20" GridPane.rowIndex="0" GridPane.columnSpan="2"/>
+         	<Button fx:id="aggiorna" onMouseClicked="#handleRefresh" text="Refresh" style="-fx-font-size:20"></Button>
+         </children>
+      </GridPane>
+   </children>
+</VBox>

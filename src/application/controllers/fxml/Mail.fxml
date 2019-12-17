@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<GridPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="698.0" prefWidth="857.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1"
+                 fx:controller="application.controllers.ControllerMail">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.20001220703125" minWidth="0.0" prefWidth="0.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="550.0" minWidth="10.0" prefWidth="550.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="144.39996337890625" minWidth="0.0" prefWidth="0.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="343.6000122070312" minHeight="10.0" prefHeight="114.80000915527341" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="455.99999084472654" minHeight="10.0" prefHeight="388.00000000000006" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="157.79999999999995" minHeight="10.0" prefHeight="157.79999999999995" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <TextArea fx:id="testo" prefHeight="150.0" prefWidth="350.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </TextArea>
+      <Button fx:id="cancella" onMouseClicked="#handleCancellaButton"  alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" prefHeight="30.0" prefWidth="98.0" text="cancella" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Button fx:id="invio" contentDisplay="RIGHT"  mnemonicParsing="false" prefHeight="30.0" prefWidth="98.0" text="invio" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" onMouseClicked="#handleSend">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Button>
+      <Text fill="#f81100" strokeType="OUTSIDE" strokeWidth="0.0" text="Game feedback" textAlignment="CENTER" wrappingWidth="559.7366297245026" GridPane.columnIndex="1">
+         <font>
+            <Font name="HoloLens MDL2 Assets" size="28.0" />
+         </font>
+      </Text>
+      <Label fx:id="label" GridPane.columnIndex="1" GridPane.rowIndex="3" text="">
+      <font>
+      	<Font size="22" />
+      </font>
+      </Label>
+   </children>
+</GridPane>

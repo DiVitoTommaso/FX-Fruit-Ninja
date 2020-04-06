@@ -1,13 +1,13 @@
 package application.controllers;
 
 import java.text.DecimalFormat;
-import java.util.Random;
 
 import application.GameApplication;
 import application.ResourcesBundle;
 import application.components.Bullet;
 import application.components.Entity;
 import application.components.HitBox;
+import application.components.ObjectThrower;
 import application.components.RandomTargetShifter;
 import application.components.Timer;
 import javafx.animation.KeyFrame;
@@ -24,13 +24,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -46,30 +48,26 @@ public class ControllerGame {
 
 	private Image spada;
 	private Image spadaLanciata;
+	private Image hearths;
 
 	private RandomTargetShifter[] targets = new RandomTargetShifter[12];
 	private RandomTargetShifter[] enemies = new RandomTargetShifter[4];
+	private ObjectThrower thrower = new ObjectThrower(targets, enemies);
 
-	private Timer timer = new Timer(181); // piccolo lag 1 in piu
+	private Timer timer = new Timer(180);
 	private Bullet bullet = new Bullet();
-	private Random random = new Random();
 	private DecimalFormat df = new DecimalFormat("0.00");
-
-	private int numeroMassimoBersagli;
-	private int numeroNemici;
-
-	private boolean isRunning;
+	private Thread throwExecutor;
 
 	private int score;
-	private int numeroNemiciColpiti;
 	private double moltiplicatore;
-	private double maxErrors;
+	private boolean isRunning;
+	private int reloadTime;
 
 	private double mouseX;
 	private double mouseY;
 
 	private Timeline timeLine;
-	private Thread lanciatore;
 	private GraphicsContext gc;
 	@FXML
 	private Canvas canvas;
@@ -80,13 +78,17 @@ public class ControllerGame {
 	@FXML
 	private Label info2;
 	@FXML
-	private GridPane pane;
+	private Pane pane;
 	@FXML
 	private Label info;
 	@FXML
 	private Button conferma;
 	@FXML
 	private ImageView backToMenu;
+	@FXML
+	private ImageView pause;
+	@FXML
+	private ImageView resume;
 
 	private Entity entity1 = new Entity(
 			new Image(getClass().getResourceAsStream("/application/res/texture/target1.png")),
@@ -110,9 +112,15 @@ public class ControllerGame {
 	@FXML
 	private void initialize() {
 		// inizializzazione scena
-		isRunning = false;
+		hearths = new Image(getClass().getResourceAsStream("/application/res/texture/hearth.png"));
 		spada = new Image(getClass().getResourceAsStream("/application/res/texture/sword.png"));
 		spadaLanciata = new Image(getClass().getResourceAsStream("/application/res/texture/brokenSword.png"));
+		backToMenu.setImage(
+				new Image(getClass().getResourceAsStream("/application/res/texture/back.png"), 50, 50, false, false));
+		pause.setImage(
+				new Image(getClass().getResourceAsStream("/application/res/texture/pause.png"), 65, 65, false, false));
+		resume.setImage(
+				new Image(getClass().getResourceAsStream("/application/res/texture/resume.png"), 60, 60, false, false));
 
 		canvas.setWidth(ResourcesBundle.menuWidth);
 		canvas.setHeight(ResourcesBundle.menuHeight);
@@ -130,10 +138,25 @@ public class ControllerGame {
 
 		timeLine.setCycleCount(Timeline.INDEFINITE);
 
-		backToMenu.setImage(
-				new Image(getClass().getResourceAsStream("/application/res/texture/back.png"), 50, 50, false, false));
 		timer.onTimeExpired(this::stop);
+		thrower.setOnTriesExpire(this::stop);
+		thrower.setOnHit(this::onTargetsHit, this::onEnemiesHit);
 
+	}
+	
+	private void onEnemiesHit(RandomTargetShifter r) {
+		r.stop();
+		ResourcesBundle.getMusicPlayer().stopSound("enemy");
+		ResourcesBundle.getMusicPlayer().playSound("enemy");
+		thrower.decreaseTries();
+		reloadTime = 2000;
+	}
+
+	private void onTargetsHit(RandomTargetShifter r) {
+		ResourcesBundle.getMusicPlayer().stopSound("hittedTarget");
+		ResourcesBundle.getMusicPlayer().playSound("hittedTarget");
+		r.stop();
+		score += r.getEntity().getBaseValue() * moltiplicatore;
 	}
 
 	public void startGame() {
@@ -153,6 +176,8 @@ public class ControllerGame {
 		info.setVisible(false);
 		conferma.setVisible(false);
 		info2.setVisible(false);
+		pause.setVisible(true);
+		resume.setVisible(false);
 	}
 
 	private void initializeGameEngine() {
@@ -164,93 +189,51 @@ public class ControllerGame {
 		ResourcesBundle.getMusicPlayer().setVolumeSound("hittedTarget", gameVolume);
 		// resetto le variabili
 		score = 0;
-		isRunning = true;
-		numeroNemiciColpiti = 0;
-		mouseX = -Integer.MAX_VALUE;
-		mouseY = -Integer.MAX_VALUE;
+		mouseX = -100;
+		mouseY = -100;
 		entity1.setX(-Integer.MAX_VALUE);
 		entity2.setX(-Integer.MAX_VALUE);
 		entity3.setX(-Integer.MAX_VALUE);
 		enemy.setX(-Integer.MAX_VALUE);
+		isRunning = true;
 
-		// creo un thread incaricato di controllare se ci sono oggetti lanciati
-		// se ci sono oggetti (buoni) in fase di lancio non fa niente se non ci sono ne
-		// lancia altri
-		lanciatore = new Thread(() -> {
-
-			while (isRunning) {
-
-				try {
-					Thread.sleep(50);
-				} catch (InterruptedException e) {
-				}
-				// controllo se il tempo è finito o sono stati colpiti troppi nemici
-				if (numeroNemiciColpiti > maxErrors)
-					stop();
-				// lancio altro se tutti i bersagli sono fermi
-				boolean targetInmovimento = false;
-
-				for (int i = 0; i < targets.length; i++)
-					if (targets[i].isRunning())
-						targetInmovimento = true;
-
-				for (int i = 0; i < enemies.length; i++)
-					if (enemies[i].isRunning())
-						targetInmovimento = true;
-
-				if (!targetInmovimento) {
-					for (int i = 0; i < numeroMassimoBersagli; i++)
-						targets[random.nextInt(targets.length)].start();
-
-					for (int i = 0; i < numeroNemici; i++)
-						enemies[i].start();
-
-				}
-			}
-
-		});
+		throwExecutor = new Thread(this::throwSword);
 
 		// in base alla difficolta creo i bersagli
 		switch (difficulty) {
 		case 1:
 
-			numeroMassimoBersagli = 1;
-			numeroNemici = 1;
-			maxErrors = 3;
+			thrower.setThrowableObjects(1, 1);
+			thrower.setTries(3);
 			moltiplicatore = 1;
 			break;
 		case 2:
-			numeroMassimoBersagli = 2;
-			numeroNemici = 2;
-			maxErrors = 2;
+			thrower.setThrowableObjects(2, 2);
+			thrower.setTries(2);
 			moltiplicatore = 2;
 			break;
 
 		case 3:
-			numeroMassimoBersagli = 3;
-			numeroNemici = 3;
-			maxErrors = 2;
+			thrower.setThrowableObjects(3, 3);
+			thrower.setTries(2);
 			moltiplicatore = 4;
 			break;
 
 		case 4:
-			numeroMassimoBersagli = 4;
-			numeroNemici = 3;
-			maxErrors = 1;
+			thrower.setThrowableObjects(4, 3);
+			thrower.setTries(1);
 			moltiplicatore = 6;
 			break;
 
 		case 5:
-			numeroMassimoBersagli = 5;
-			numeroNemici = 4;
-			maxErrors = 1;
+			thrower.setThrowableObjects(5, 4);
+			thrower.setTries(1);
 			moltiplicatore = 8;
 			break;
 
 		case 6:
-			numeroMassimoBersagli = 6;
-			numeroNemici = 4;
-			maxErrors = 0;
+			thrower.setThrowableObjects(6, 4);
+			thrower.setTries(0);
 			moltiplicatore = 10;
 			break;
 		}
@@ -278,7 +261,9 @@ public class ControllerGame {
 
 		timeLine.play();
 		timer.start();
-		lanciatore.start();
+		thrower.start();
+		throwExecutor.start();
+		bullet.loadBullet(1);
 
 	}
 
@@ -289,9 +274,12 @@ public class ControllerGame {
 			ResourcesBundle.getMusicPlayer().playSound("end");
 			ResourcesBundle.getMusicPlayer().stopMusic(gameMusic);
 
+			isRunning = false;
 			timer.stop();
 			timeLine.stop();
-			isRunning = false;
+			thrower.stop();
+			bullet.stop();
+			throwExecutor.interrupt();
 
 			Platform.runLater(() -> {
 
@@ -304,6 +292,34 @@ public class ControllerGame {
 
 			});
 		}).start();
+	}
+
+	@FXML
+	private void handlePause() {
+		if (isRunning) {
+			thrower.suspendAll();
+			timer.suspend();
+			bullet.suspend();
+			ResourcesBundle.getMusicPlayer().suspendMusic(gameMusic);
+			pause.setVisible(false);
+			resume.setVisible(true);
+			timeLine.pause();
+			GameApplication.removeAlwaysOnTop();
+		}
+	}
+
+	@FXML
+	private void handleResume() {
+		if (isRunning) {
+			thrower.resumeAll();
+			timer.resume();
+			bullet.resume();
+			ResourcesBundle.getMusicPlayer().resumeMusic(gameMusic);
+			resume.setVisible(false);
+			pause.setVisible(true);
+			timeLine.play();
+			GameApplication.setAlwaysOnTop();
+		}
 	}
 
 	@FXML
@@ -322,64 +338,59 @@ public class ControllerGame {
 
 	@FXML
 	private void handleRipristino() {
-		conferma.setStyle("-fx-font-size:24");
+		conferma.setStyle("-fx-border-color:black;-fx-font-size:24");
 	}
 
 	@FXML
 	private void handleColore() {
-		conferma.setStyle("-fx-background-color:green ; -fx-font-size:24");
+		conferma.setStyle(conferma.getStyle() + ";-fx-background-color : green; -fx-font-size:24;");
 	}
 
 	@FXML
-	private void handleColpisci(MouseEvent event) {
+	private synchronized void handleColpisci(MouseEvent event) {
+		if (!timer.isPaused() && bullet.shootBullet()) {
+			mouseX = event.getX();
+			mouseY = event.getY();
+			notify();
+		}
+	}
 
-		// creo un thread per evitare lag nella view
-		new Thread(() -> {
-			// se il colpo è carico
-			// salvo la posizione del colpo
-			// guardo se ha colpito qualcosa
-			// aumento o dimuisco lo score e imposto il tempo di ricarica per il prossimo
-			// colpo
-			if (bullet.shootBullet()) {
-				int reloadTime = 500;
-				for (int i = 0; i < targets.length; i++)
-					targets[i].getEntity().setHitted(false);
-
-				mouseX = event.getX();
-				mouseY = event.getY();
-				ResourcesBundle.getMusicPlayer().stopSound("recharge");
-				ResourcesBundle.getMusicPlayer().playSound("recharge");
-
-				for (int i = 0; i < targets.length; i++) {
-					if (targets[i].getEntity().contains((int) event.getX(), (int) event.getY())) {
-						targets[i].getEntity().setHitted(true); // ho colpito un bersaglio?
-						score += targets[i].getEntity().getBaseValue() * moltiplicatore;
-						targets[i].stop();
-						ResourcesBundle.getMusicPlayer().stopSound("hittedTarget");
-						ResourcesBundle.getMusicPlayer().playSound("hittedTarget");
-						// break;
-					}
+	private void throwSword() {
+		// se il colpo è carico
+		// salvo la posizione del colpo
+		// guardo se ha colpito qualcosa
+		// aumento o dimuisco lo score e imposto il tempo di ricarica per il prossimo
+		while (true) {
+			synchronized (this) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					break;
 				}
-
-				for (int i = 0; i < enemies.length; i++) {
-					if (enemies[i].getEntity().contains((int) event.getX(), (int) event.getY())) {
-						numeroNemiciColpiti++; // ho colpito un nemico ? si aumento il numero di volte che l'ho// preso
-						enemies[i].stop();
-						ResourcesBundle.getMusicPlayer().stopSound("enemy");
-						ResourcesBundle.getMusicPlayer().playSound("enemy");
-						reloadTime = 2000;
-					}
-				}
-
-				bullet.loadBullet(reloadTime); // se non ho colpito un nemico carico veloce
 			}
-		}).start();
+
+			reloadTime = 500;
+			
+			thrower.resetHit();
+
+			ResourcesBundle.getMusicPlayer().stopSound("recharge");
+			ResourcesBundle.getMusicPlayer().playSound("recharge");
+
+			thrower.checkHit(mouseX, mouseY);
+
+			bullet.loadBullet(reloadTime); // se non ho colpito un nemico carico veloce
+		}
+	}
+
+	@FXML
+	private void handleConferma2(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER)
+			handleConferma();
 	}
 
 	@FXML
 	private void handleBackToMenu() {
 		stop();
-
 	}
 
 	/**
@@ -436,27 +447,21 @@ public class ControllerGame {
 		gc.fillText("x" + (int) moltiplicatore, canvas.getWidth() / 2 + 30, canvas.getHeight() - 30);
 		// disegno la scritta errori massimi
 		gc.setFill(Color.BLACK);
-		gc.fillText("Errors: ", canvas.getWidth() / 2 - 110, 40);
-
-		// cambio colore a seconda del numero di errori
-		if (maxErrors / 2 <= numeroNemiciColpiti)
-			gc.setFill(Color.RED);
-		// numero errori
-		gc.fillText(numeroNemiciColpiti + "/" + (int) maxErrors, canvas.getWidth() / 2 - 10, 40);
-		// disegno scritta tempo e punteggio
+		gc.drawImage(hearths, canvas.getWidth() / 2 + 50, 20, 70, 70);// disegno scritta tempo e punteggio
+		gc.fillText("x" + thrower.getRemainingTries(), canvas.getWidth() / 2 + 120, 60);
 		gc.setFill(Color.WHITE);
-		gc.fillText("Score:", canvas.getWidth() - 180, canvas.getHeight() - 30);
-		gc.fillText("Time:", canvas.getWidth() - 180, 40);
+		gc.fillText("Score:", canvas.getWidth() - 190, canvas.getHeight() - 30);
+		gc.fillText("Time:", canvas.getWidth() - 190, 60);
 		// cambio colore in base al tempo rimasto
 		if (timer.getTime() > 10)
 			gc.setFill(Color.LIGHTGREEN);
 		else
 			gc.setFill(Color.RED);
 		// scrivo solo 2 cifre dopo la virgola
-		gc.fillText(df.format(timer.getTime()), canvas.getWidth() - 100, 40);
+		gc.fillText(df.format(timer.getTime()), canvas.getWidth() - 110, 60);
 		// disegno il numero di punti
 		gc.setFill(Color.WHITE);
-		gc.fillText("" + score, canvas.getWidth() - 90, canvas.getHeight() - 30);
+		gc.fillText("" + score, canvas.getWidth() - 100, canvas.getHeight() - 30);
 
 	}
 

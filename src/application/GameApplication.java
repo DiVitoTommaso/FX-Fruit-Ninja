@@ -49,6 +49,8 @@ public class GameApplication extends Application {
 					"D'Agostino - In My Mind");
 			ResourcesBundle.getMusicPlayer().putGameMusic(getClass().getResource("res/music/LetItDie.mp3"),
 					" Starset - Let It Die");
+			ResourcesBundle.getMusicPlayer().putGameMusic(getClass().getResource("res/music/SheWolf.mp3"),
+					"Sia - She Wolf ");
 			ResourcesBundle.getMusicPlayer().putGameMusic(getClass().getResource("res/music/Shine.mp3"),
 					"Spektrem - Shine");
 			ResourcesBundle.getMusicPlayer().putGameMusic(getClass().getResource("res/music/TetrixBassVeela.mp3"),
@@ -151,13 +153,21 @@ public class GameApplication extends Application {
 		stage.setScene(menuScene);
 		controllerMenu.draw();
 	}
+	
+	public static void setAlwaysOnTop() {
+		stage.setAlwaysOnTop(true);
+	}
+	
+	public static void removeAlwaysOnTop() {
+		stage.setAlwaysOnTop(false);
+	}
 
 	/**
 	 * set scena setting su stage principale
 	 */
 	public static void setSettingScene() {
 		stage.setScene(settingsScene);
-		controllerMenu.stopDraw();
+		controllerMenu.pauseDraw();
 	}
 
 	/**
@@ -177,7 +187,7 @@ public class GameApplication extends Application {
 
 	public static void setTutorialScene() {
 		stage.setScene(tutorialScene);
-		controllerMenu.stopDraw();
+		controllerMenu.pauseDraw();
 	}
 
 	/**
@@ -186,7 +196,7 @@ public class GameApplication extends Application {
 	public static void setGameScene() {
 		stage.setAlwaysOnTop(true);
 		stage.setScene(gameScene);
-		controllerMenu.stopDraw();
+		controllerMenu.pauseDraw();
 		controllerGame.startGame();
 	}
 

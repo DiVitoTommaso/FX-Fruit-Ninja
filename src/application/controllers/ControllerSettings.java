@@ -2,6 +2,8 @@ package application.controllers;
 
 import application.GameApplication;
 import application.ResourcesBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,8 +11,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -49,10 +49,10 @@ public class ControllerSettings {
 	@FXML
 	private ImageView goBack;
 	@FXML
-	private ListView<Label> musicsListView=new ListView<Label>();
+	private ListView<Label> musicsListView = new ListView<Label>();
 
 	public ControllerSettings() {
-		
+
 	}
 
 	@FXML
@@ -60,8 +60,8 @@ public class ControllerSettings {
 
 		// set background image
 		pane.setBackground(new Background(new BackgroundImage(
-				new Image(getClass().getResourceAsStream("/application/res/texture/background.PNG"), ResourcesBundle.menuWidth,
-						ResourcesBundle.menuHeight, false, true),
+				new Image(getClass().getResourceAsStream("/application/res/texture/background.PNG"),
+						ResourcesBundle.menuWidth, ResourcesBundle.menuHeight, false, true),
 				BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
 				BackgroundSize.DEFAULT)));
 
@@ -74,39 +74,41 @@ public class ControllerSettings {
 		text.setFont(new Font("verdana", 22));
 		text2.setFont(new Font("verdana", 22));
 
-		goBack.setImage(new Image(getClass().getResourceAsStream("/application/res/texture/back.png"), 50, 50, false, false));
+		goBack.setImage(
+				new Image(getClass().getResourceAsStream("/application/res/texture/back.png"), 50, 50, false, false));
 		musicsListView.setItems(ResourcesBundle.getMusicPlayer().getPlayerAsLabelObservableList());
-		
+
 		musicsListView.getSelectionModel().selectFirst();
 		ControllerGame.setGameMusic(musicsListView.getSelectionModel().getSelectedItem().getText());
 
-	}
-	
-	@FXML
-	private void handleChangeMusicByKey(KeyEvent event) {
-		if(event.getCode() == KeyCode.DOWN || event.getCode() == KeyCode.UP) 
-			handleChangeMusic();
-	}
-	
-	@FXML
-	private void handleChangeMusic() {
-		if(musicsListView.getSelectionModel().getSelectedItem() == null) {
-			musicsListView.getSelectionModel().selectFirst();
-			return;
-		}
-			
-	ControllerGame.setGameMusic(musicsListView.getSelectionModel().getSelectedItem().getText());
-	musicsListView.getSelectionModel().getSelectedItem();
-	}
+		musicsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Label>() {
 
-	@FXML
-	private void handleSounds() {
-		ControllerGame.setGameVolume(sliderSounds.getValue());
-	}
+			@Override
+			public void changed(ObservableValue<? extends Label> arg0, Label arg1, Label arg2) {
+				ControllerGame.setGameMusic(arg2.getText());
+				ResourcesBundle.getMusicPlayer().stopMusic(arg1.getText());
+				ResourcesBundle.getMusicPlayer().playMusic(arg2.getText());
+			}
+		
+		});
 
-	@FXML
-	private void handleSoundTrack() {
-		ControllerGame.setTrackVolume(sliderSoundtrack.getValue());
+		sliderSoundtrack.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				ResourcesBundle.getMusicPlayer().setVolumeMusic(musicsListView.getSelectionModel().getSelectedItem().getText(), sliderSoundtrack.getValue());
+				ControllerGame.setTrackVolume((double) newValue);
+			}
+
+		});
+
+		sliderSounds.valueProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				ControllerGame.setGameVolume((double) newValue);
+			}
+		});
 	}
 
 	/*----------------------------------------------------------
@@ -181,6 +183,7 @@ public class ControllerSettings {
 
 	@FXML
 	private void handleBackToMenu() {
+		ResourcesBundle.getMusicPlayer().stopMusic(musicsListView.getSelectionModel().getSelectedItem().getText());
 		GameApplication.setMenuScene();
 
 	}

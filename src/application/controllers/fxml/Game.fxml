@@ -2,34 +2,44 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root"
 	fx:controller="application.controllers.ControllerGame"
 	onMouseClicked="#handleColpisci">
 	<children>
 		<Canvas fx:id="canvas"></Canvas>
-		<GridPane fx:id="pane" hgap="128" vgap="72">
+		<Pane fx:id="pane">
 			<children>
 				<ImageView fx:id="backToMenu"
-					onMouseClicked="#handleBackToMenu" GridPane.columnIndex="0"
-					GridPane.rowIndex="0" GridPane.columnSpan="2" GridPane.rowSpan="2"></ImageView>
+					onMouseClicked="#handleBackToMenu" layoutX="0" layoutY="5"></ImageView>
+				<ImageView fx:id="pause" onMouseClicked="#handlePause"
+					layoutX="550" layoutY="0"></ImageView>
+				<ImageView fx:id="resume" onMouseClicked="#handleResume"
+					layoutX="552" layoutY="2"></ImageView>
 				<TextField fx:id="text" maxWidth="200" maxHeight="50"
-					style="-fx-font-size:20" onMouseClicked="#handleClear" GridPane.columnIndex="4" GridPane.rowIndex="5"></TextField>
-				<Label fx:id="info" textFill="BLUE" style="-fx-font-size:40; -fx-font-weight : bold" GridPane.columnIndex="3" GridPane.rowIndex="3" GridPane.columnSpan="6" GridPane.rowSpan="1"></Label>
+					style="-fx-font-size:20" onMouseClicked="#handleClear"
+					minWidth="250" focusTraversable="true"
+					onKeyPressed="#handleConferma2" layoutX="550" layoutY="350"></TextField>
+				<Label fx:id="info" textFill="BLUE"
+					style="-fx-font-size: 50; -fx-font-weight : bold" layoutX="360"
+					layoutY="200"></Label>
 				<Label fx:id="info2"
-					style="-fx-font-size:24; -fx-font-weight : bold" text="Your Name"
-					underline="true" minWidth="200" maxWidth="200" GridPane.columnIndex="3" GridPane.rowIndex="5" GridPane.columnSpan="2" GridPane.rowSpan="1"></Label>
-				<Button fx:id="conferma" text="Ok" maxWidth="200"
-					maxHeight="100" style="-fx-font-size:24"
+					style="-fx-font-size:32; -fx-font-weight : bold" text="Your Name"
+					underline="true" minWidth="200" maxWidth="200" layoutX="360"
+					layoutY="350"></Label>
+				<Button fx:id="conferma" text="Ok" minWidth="200"
+					minHeight="40"
+					style="-fx-font-size:24;-fx-font-weight : bold;-fx-border-color:black"
 					onMouseClicked="#handleConferma" onMouseEntered="#handleColore"
-					onMouseExited="#handleRipristino" GridPane.columnIndex="4" GridPane.rowIndex="6"></Button>
+					layoutX="500" layoutY="450" onMouseExited="#handleRipristino"></Button>
 			</children>
-		</GridPane>
+		</Pane>
 	</children>
 	<!-- TODO Add Nodes -->
 </StackPane>

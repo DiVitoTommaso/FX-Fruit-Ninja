@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -28,14 +29,38 @@ public class MusicsPlayer {
 
 	}
 
+	public boolean isPlayingMusic(String name) {
+		return gameMusic.get(name).getStatus() == Status.PLAYING;
+	}
+
+	public boolean isPlayingSound(String name) {
+		return gameSounds.get(name).getStatus() == Status.PLAYING;
+	}
+
 	public MusicsPlayer() {
 
+	}
+
+	public void suspendMusic(String name) {
+		gameMusic.get(name).pause();
+	}
+
+	public void suspendSound(String name) {
+		gameSounds.get(name).pause();
+	}
+
+	public void resumeMusic(String name) {
+		gameMusic.get(name).play();
+	}
+
+	public void resumeSound(String name) {
+		gameSounds.get(name).play();
 	}
 
 	public void setVolumeMusic(String name, double volume) {
 		gameMusic.get(name).setVolume(volume);
 	}
-	
+
 	public void setVolumeSound(String name, double volume) {
 		gameSounds.get(name).setVolume(volume);
 	}

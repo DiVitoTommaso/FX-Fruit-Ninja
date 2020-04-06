@@ -47,16 +47,16 @@
 			GridPane.rowIndex="3"></Text>
 		<Pane GridPane.columnIndex="7" GridPane.rowIndex="3"
 			GridPane.columnSpan="4" GridPane.rowSpan="3">
-			<ListView fx:id="musicsListView" minWidth="625" maxWidth="625" 
-				minHeight="220" maxHeight="220" onMouseClicked="#handleChangeMusic" onKeyReleased="#handleChangeMusicByKey"
-				layoutY="120"></ListView>
-			<Text fx:id="text" text="Music Volume:"  layoutY="360" style="-fx-font-weight : bold"/>
+			<ListView fx:id="musicsListView" minWidth="625"
+				maxWidth="625" minHeight="210" maxHeight="210" layoutY="120"></ListView>
+			<Text fx:id="text" text="Music Volume:" layoutY="360"
+				style="-fx-font-weight : bold" />
 			<Slider fx:id="sliderSoundtrack" max="1" maxWidth="200"
-				min="0" minWidth="200" onMouseReleased="#handleSoundTrack"
-				value="0.5" layoutX="200" layoutY="335" />
-			<Text fx:id="text2" text="Game Volume:" layoutY="400"  style="-fx-font-weight : bold"/>
+				min="0" minWidth="200" value="0.5" layoutX="200" layoutY="335" />
+			<Text fx:id="text2" text="Game Volume:" layoutY="400"
+				style="-fx-font-weight : bold" />
 			<Slider fx:id="sliderSounds" max="1" maxWidth="200" min="0"
-				minWidth="200" onMouseReleased="#handleSounds" value="1"  layoutY="375" layoutX="200"/>
+				minWidth="200" value="1" layoutY="375" layoutX="200" />
 		</Pane>
 	</children>
 	<columnConstraints>

@@ -2,13 +2,10 @@ package application.controllers;
 
 import application.GameApplication;
 import application.ResourcesBundle;
-import application.components.NewsShifter;
-import application.components.ValueShifter;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.Interpolator;
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -17,19 +14,12 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import javafx.scene.layout.*;
 
 public class ControllerMenu {
 
-	private String news = "Version:1.4.13--Custom leadearboard--New songs--New gamerules--Lag decreased-";
-	private ValueShifter value;
-	private NewsShifter ns;
-
-	private GraphicsContext gc;
-	private Timeline time;
 	@FXML
 	private StackPane root;
 	@FXML
@@ -39,14 +29,19 @@ public class ControllerMenu {
 	@FXML
 	private ImageView contact;
 	@FXML
-	private Canvas canvas;
-	@FXML
 	private ImageView settings;
 	@FXML
 	private ImageView leaderBoard;
 	@FXML
 	private ImageView tutorial;
+	@FXML
+	private TextFlow welcome;
+	@FXML
+	private TextFlow news;
 
+	private ScaleTransition playButton = new ScaleTransition(Duration.millis(1000));
+	private ScaleTransition welcomeText = new ScaleTransition(Duration.millis(1000));
+	private TranslateTransition newsText=new TranslateTransition();
 	public ControllerMenu() {
 
 	}
@@ -55,38 +50,49 @@ public class ControllerMenu {
 	private void initialize() {
 
 		// inizializzazione immagini per imageView
-		play.setImage(new Image(getClass().getResourceAsStream("/application/res/texture/play.png"), 400, 300, false, false));
-		contact.setImage(
-				new Image(getClass().getResourceAsStream("/application/res/texture/contact.png"), 250, 150, false, false));
-		settings.setImage(
-				new Image(getClass().getResourceAsStream("/application/res/texture/settings.png"), 250, 150, false, false));
-		leaderBoard.setImage(
-				new Image(getClass().getResourceAsStream("/application/res/texture/leaderboard.png"), 400, 400, false, false));
-		tutorial.setImage(
-				new Image(getClass().getResourceAsStream("/application/res/texture/credits.png"), 250, 150, false, false));
+		play.setImage(
+				new Image(getClass().getResourceAsStream("/application/res/texture/play.png"), 400, 300, false, false));
+		contact.setImage(new Image(getClass().getResourceAsStream("/application/res/texture/contact.png"), 250, 150,
+				false, false));
+		settings.setImage(new Image(getClass().getResourceAsStream("/application/res/texture/settings.png"), 250, 150,
+				false, false));
+		leaderBoard.setImage(new Image(getClass().getResourceAsStream("/application/res/texture/leaderboard.png"), 400,
+				400, false, false));
+		tutorial.setImage(new Image(getClass().getResourceAsStream("/application/res/texture/credits.png"), 250, 150,
+				false, false));
 		
-		canvas.setWidth(ResourcesBundle.menuWidth);
-		canvas.setHeight(ResourcesBundle.menuHeight);
+		newsText.setDuration(Duration.millis(50000));
+
+		playButton.setNode(play);
+		welcomeText.setNode(welcome);
+		newsText.setNode(news);
+
+		newsText.setToX(-3500);
+        newsText.setInterpolator(Interpolator.LINEAR);
+        
+		playButton.setByY(0.2);
+		playButton.setByX(0.2);
+		welcomeText.setByX(0.4);
+		welcomeText.setByY(0.4);
+		newsText.setByX(-1);
+		
+		playButton.setCycleCount(-1);
+		welcomeText.setCycleCount(-1);
+		newsText.setCycleCount(-1);
+		
+		playButton.setAutoReverse(true);
+		welcomeText.setAutoReverse(true);
+		newsText.setAutoReverse(false);
 		
 		root.setBackground(new Background(new BackgroundImage(
-				new Image(getClass().getResourceAsStream("/application/res/texture/background.PNG"), ResourcesBundle.menuWidth,
-						ResourcesBundle.menuHeight, false, true),
+				new Image(getClass().getResourceAsStream("/application/res/texture/background.PNG"),
+						ResourcesBundle.menuWidth, ResourcesBundle.menuHeight, false, true),
 				BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
 				BackgroundSize.DEFAULT)));
-	
-		gc = canvas.getGraphicsContext2D();
-		// creazione oggetti per permette il movimento delle news e della scritta"welcome"
-		value = new ValueShifter(30, 70, 20, 1);
-		ns = new NewsShifter(ResourcesBundle.menuWidth, 40, NewsShifter.RIGHT_LEFT, 1, -news.length() * 13, 28);
 
-		value.startSwing();
-		ns.startMove();
-	
-		time = new Timeline(new KeyFrame(Duration.millis(20), e -> drawMenu()));
-
-		time.setCycleCount(Timeline.INDEFINITE);
-		time.play();
-
+		playButton.play();
+		welcomeText.play();
+		newsText.play();
 	}
 
 	@FXML
@@ -117,24 +123,16 @@ public class ControllerMenu {
 	}
 
 	public void draw() {
-		time.play();
+		playButton.play();
+		welcomeText.play();
+		newsText.play();
 	}
 
-	public void stopDraw() {
-		time.stop();
+	public void pauseDraw() {
+		playButton.pause();
+		welcomeText.pause();
+		newsText.pause();
+		
 	}
 
-	/**
-	 * disegno news e welcome
-	 */
-	private void drawMenu() {
-		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		gc.setFont(new Font("tahoma", value.getValue()));
-		gc.fillText("Welcome", canvas.getWidth() / 2 - 150, 130);
-		gc.setFont(new Font("tohama", 24));
-		gc.setFill(Color.RED);
-		gc.fillText("News:", ns.getX(), ns.getY());
-		gc.setFill(Color.BLACK);
-		gc.fillText(news, ns.getX() + 80, ns.getY());
-	}
 }

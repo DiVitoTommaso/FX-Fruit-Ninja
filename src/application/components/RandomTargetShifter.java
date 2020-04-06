@@ -9,9 +9,11 @@ public class RandomTargetShifter implements Runnable {
 	private static double gravity = 9.8;
 	private Thread thread;
 	private Thread threadRotation;
-	private Entity entity;
+	private final Rectangle2D range;
+
+	private volatile Entity entity;
 	private volatile boolean isRunning = false;
-	private Rectangle2D range;
+	private boolean interrupt = false;
 
 	private int angle;
 	private int v0x;
@@ -19,6 +21,8 @@ public class RandomTargetShifter implements Runnable {
 	private double time;
 	private double angleX;
 	private double angleY;
+
+	private Object object = new Object();
 
 	/**
 	 * 
@@ -29,11 +33,11 @@ public class RandomTargetShifter implements Runnable {
 	 * @param yEnd   bounds
 	 *
 	 */
-	public RandomTargetShifter(Entity entity,Rectangle2D range) {
+	public RandomTargetShifter(Entity entity, Rectangle2D range) {
 		if (entity == null)
 			throw (new IllegalArgumentException("entita nulla"));
 		this.entity = entity;
-		this.range=range;
+		this.range = range;
 
 	}
 
@@ -66,8 +70,13 @@ public class RandomTargetShifter implements Runnable {
 			entity.setX(range.getMaxX() - angleX * time);
 			entity.setY(range.getMaxY() - angleY * time + gravity * (Math.pow(time, 2) / 2));
 			try {
+				if (interrupt)
+					synchronized (this) {
+						wait();
+					}
 				Thread.sleep(15);
 			} catch (InterruptedException e) {
+				return;
 			}
 		} while (entity.getX() > range.getMinX() && entity.getY() < range.getMaxY() && isRunning);
 		// controllo ogni volta se è compreso nell'area se va fuori inutile continuare
@@ -81,9 +90,15 @@ public class RandomTargetShifter implements Runnable {
 
 			entity.setX(range.getMinX() + angleX * time);
 			entity.setY(range.getMaxY() - angleY * time + gravity * (Math.pow(time, 2) / 2));
+
 			try {
+				if (interrupt)
+					synchronized (this) {
+						wait();
+					}
 				Thread.sleep(15);
 			} catch (InterruptedException e) {
+				return;
 			}
 		} while (entity.getX() < range.getMaxX() && entity.getY() < range.getMaxY() && isRunning);
 		// controllo ogni volta se è compreso nell'area se va fuori inutile continuare
@@ -92,37 +107,63 @@ public class RandomTargetShifter implements Runnable {
 	private void rotate() {
 		while (isRunning) {
 			try {
+				if (interrupt)
+					synchronized (this) {
+						wait();
+					}
 				Thread.sleep(5);
 				entity.addRotate(3);
 			} catch (InterruptedException e) {
+				return;
 			}
 		}
 	}
 
 	public synchronized void start() {
-		if (!isRunning) {
+		if (isRunning)
+			return;
+		isRunning = true;
+		interrupt = false;
 
-			if (thread != null && threadRotation != null)
-				try {
-					thread.join();
-					threadRotation.join();
-				} catch (InterruptedException e) {
+		thread = new Thread(this, "shifter");
+		threadRotation = new Thread(this::rotate, "rotator");
+
+		thread.start();
+		threadRotation.start();
+
+	}
+
+	public void waitTerminate() {
+		if (isRunning)
+			try {
+				synchronized (object) {
+					object.wait();
 				}
+			} catch (InterruptedException e) {
+			}
+	}
 
-			thread = new Thread(this);
-			threadRotation = new Thread(this::rotate);
-			isRunning = true;
-			thread.start();
-			threadRotation.start();
+	public synchronized void stop() {
+		if (isRunning) {
+			isRunning = false;
+			interrupt = false;
+			thread.interrupt();
+			threadRotation.interrupt();
+			entity.setX(-Integer.MAX_VALUE);
+			synchronized (object) {
+				object.notifyAll();
+			}
 
 		}
 	}
 
-	public void stop() {
-		if (isRunning) {
-			isRunning = false;
-			entity.setX(-Integer.MAX_VALUE);
-		}
+	public synchronized void suspend() {
+		interrupt = true;
+	}
+
+	public synchronized void resume() {
+		interrupt = false;
+		notifyAll();
 	}
 
 	/**

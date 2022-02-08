@@ -9,6 +9,5 @@
 # How to
 1) Use java 8 (newer versions have graphics bugs)
 
-2)
-  - Compile it with eclipse (Nothing to do extra)
-  - Compile it with Intellij IDEA you need to mark the folders **fxml** and **res** as resources folders.
+2) Compile it with eclipse (Nothing to do extra)
+2*) Compile it with Intellij IDEA you need to mark the folders **fxml** and **res** as resources folders.

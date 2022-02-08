@@ -1,4 +1,2 @@
 1) install java jdk 8
-2) Go here: https://tommydev.ddns.net/cloud/index.php/s/MKKdrCrTAPFdKL7
-3) download the entire directory
-4) click on run.bat
+2) download project and compile it with your favorite IDE (tested with eclipse) Intellij IDEA should work with some workaround for resoruces
